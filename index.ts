@@ -59,13 +59,14 @@ app.get("/food/", async (req: Request, res: Response) => {
   res.json(food);
 });
 app.post("/food/", async (req: Request, res: Response) => {
-  const name = req.body.name;
+  const foodName = req.body.foodName;
   const price = req.body.price;
   const ingredients = req.body.ingredients;
+  const image=req.body.image
   const newItem = await FoodModel.create({
-    foodName: name,
+    foodName: foodName,
     price: price,
-    image: "hhtps",
+    image: image,
     ingredients: ingredients,
   });
   const food = await FoodModel.find();
@@ -78,7 +79,7 @@ app.put("/food/:id", async (req: Request, res: Response) => {
     foodName: "chicken",
     price: 20000,
     image: "hht2e2daps",
-    ingredients: "test2dwada",
+    ingredients: "test2dwada"
   });
   const food = await FoodModel.find();
 
