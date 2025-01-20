@@ -55,17 +55,18 @@ app.put("/food-category/:id", async (req: Request, res: Response) => {
 });
 
 app.get("/food/", async (req: Request, res: Response) => {
-  const food = await FoodModel.find();
+  const food = await FoodModel.find().populate("category");
   res.json(food);
 });
 app.post("/food/", async (req: Request, res: Response) => {
   const foodName = req.body.foodName;
   const price = req.body.price;
   const ingredients = req.body.ingredients;
-  const image=req.body.image
+  const image = req.body.image;
   const newItem = await FoodModel.create({
     foodName: foodName,
     price: price,
+    category: req.body.category,
     image: image,
     ingredients: ingredients,
   });
@@ -79,7 +80,7 @@ app.put("/food/:id", async (req: Request, res: Response) => {
     foodName: "chicken",
     price: 20000,
     image: "hht2e2daps",
-    ingredients: "test2dwada"
+    ingredients: "test2dwada",
   });
   const food = await FoodModel.find();
 
