@@ -26,7 +26,7 @@ app.get("/food-category/", async (req: Request, res: Response) => {
 app.post("/food-category/", async (req: Request, res: Response) => {
   const name = req.body.name;
   const newItem = await FoodCategoryModel.create({
-    categoryName: name,
+    categoryName: "Snacks",
   });
   const foodCategories = await FoodCategoryModel.find();
 
@@ -55,8 +55,13 @@ app.put("/food-category/:id", async (req: Request, res: Response) => {
 });
 
 app.get("/food/", async (req: Request, res: Response) => {
-  const food = await FoodModel.find().populate("category");
-  res.json(food);
+  try {
+    const { category } = req.query;
+    const food = await FoodModel.find({ category }).populate("category");
+    res.json(food);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch foods", error });
+  }
 });
 app.post("/food/", async (req: Request, res: Response) => {
   const foodName = req.body.foodName;
@@ -66,7 +71,7 @@ app.post("/food/", async (req: Request, res: Response) => {
   const newItem = await FoodModel.create({
     foodName: foodName,
     price: price,
-    category: req.body.category,
+    category: "678d083e26492e0425d85094",
     image: image,
     ingredients: ingredients,
   });
