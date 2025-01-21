@@ -71,7 +71,7 @@ app.post("/food/", async (req: Request, res: Response) => {
   const newItem = await FoodModel.create({
     foodName: foodName,
     price: price,
-    category: "678d083e26492e0425d85094",
+    category: req.body.category,
     image: image,
     ingredients: ingredients,
   });
