@@ -26,7 +26,7 @@ app.get("/food-category/", async (req: Request, res: Response) => {
 app.post("/food-category/", async (req: Request, res: Response) => {
   const name = req.body.name;
   const newItem = await FoodCategoryModel.create({
-    categoryName: "Snacks",
+    categoryName: name,
   });
   const foodCategories = await FoodCategoryModel.find();
 
@@ -82,14 +82,15 @@ app.put("/food/:id", async (req: Request, res: Response) => {
   const foodId = req.params.id;
   const oneFood = FoodModel.findOne({ _id: foodId });
   const replacedFood = await oneFood.updateOne({
-    foodName: "chicken",
-    price: 20000,
-    image: "hht2e2daps",
-    ingredients: "test2dwada",
+    foodName: req.body.foodName,
+    price: req.body.price,
+    image: req.body.image,
+    ingredients: req.body.ingredients,
+    category: req.body.category,
   });
   const food = await FoodModel.find();
 
-  res.json(food);
+  res.json("success");
 });
 app.delete("/food/:id", async (req: Request, res: Response) => {
   const foodId = req.params.id;
