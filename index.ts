@@ -2,8 +2,12 @@ import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import { REPLCommand } from "repl";
-import { FoodCategoryModel, FoodModel, FoodOrderItemModel } from "./Schames";
+import { FoodCategoryModel, FoodModel, FoodOrderModel } from "./Schames";
 const cors = require("cors");
+type CustomRequest =
+  | Request & {
+      userId?: String;
+    };
 
 const app = express();
 const port = 4000;
@@ -57,7 +61,8 @@ app.put("/food-category/:id", async (req: Request, res: Response) => {
 app.get("/food/", async (req: Request, res: Response) => {
   try {
     const { category } = req.query;
-    const food = await FoodModel.find({ category }).populate("category");
+    const filter = category ? { category } : {};
+    const food = await FoodModel.find(filter).populate("category");
     res.json(food);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch foods", error });
@@ -101,6 +106,13 @@ app.delete("/food/:id", async (req: Request, res: Response) => {
 
   const food = await FoodModel.find();
   res.json(food);
+});
+app.post("/food-order", async (req: CustomRequest, res: Response) => {
+  const user = req?.userId;
+  const { foodOrderItems, totalPrice } = req.body;
+  const order = { user, foodOrderItems, totalPrice };
+  const newOrder = await FoodOrderModel.create(order);
+  res.json(newOrder);
 });
 
 connectMongoDb().then(() => {
