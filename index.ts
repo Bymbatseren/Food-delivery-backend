@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+const { verifyToken } = require("@clerk/backend");
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import { REPLCommand } from "repl";
@@ -24,8 +25,19 @@ const connectMongoDb = async () => {
 };
 
 app.get("/food-category/", async (req: Request, res: Response) => {
-  const foodCategories = await FoodCategoryModel.find();
-  res.json(foodCategories);
+  try {
+    const token = req.get("authentication");
+    console.log(token);
+
+    const verified = await verifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
+    console.log({ verified });
+    const foodCategories = await FoodCategoryModel.find();
+    res.json(foodCategories);
+  } catch {
+    res.send("error");
+  }
 });
 app.post("/food-category/", async (req: Request, res: Response) => {
   const name = req.body.name;
